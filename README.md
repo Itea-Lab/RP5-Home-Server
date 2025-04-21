@@ -35,3 +35,53 @@ sudo tailscale up --ssh
 This allow you to directly SSH your Pi from a browser  
 > Go to admin console > Click on Menu option > SSH to machine
 It will then ask for login credential > SSH > Tailscale will open SSH session browser window
+
+# Setup-Cockpit-for-Raspberry-Pi-5
+If you want a GUI for managing you Raspberry Pi, you can you **Cockpit**, a beginner-friendly web-based graphical interface for servers
+1) Visit https://cockpit-project.org/running.html and select specific installation for you OS, or you can use
+```
+sudo apt install cockpit -y
+```
+2) Enable and start the Cockpit service
+```
+sudo systemctl enable --now cockpit.socket
+```
+This command enables Cockpit to start on boot and starts it immediately
+3) Try to access Cockpit web interface by open you web browser and navigate to 
+```
+https://<tailscale-ip>:9090
+```
+# (This step is optional) Enabling HTTPS for Cockpit via Tailscale
+While Tailscale provides end-to-end encryption between devices using WireGuard, browsers and other tools may still flag connections as insecure if the web interface (like Cockpit) isn't served over HTTPS. This is because, despite the underlying encryption, the absence of a TLS certificate for the web service can trigger browser warnings. To address this, Tailscale offers a feature to provision TLS certificates for services within your tailnet, enabling secure HTTPS access. Here's how you can set it up  
+1) Log in to your Tailscale Admin Console
+> DNS Settings > Enable **Magic DNS** and **HTTPS Certificates** 
+2) To obtain a TLS Certificate for your Pi, run:
+```
+sudo tailscale cert <hostname>.ts.net
+```
+Make sure to replace it with your machine's qualified domain name  
+That command should have placed two files in your system:
+```
+/var/lib/tailscale/certs/<hostname>.ts.net.crt (the certificate)  
+/var/lib/tailscale/certs/<hostname>.ts.net.key (the private key)
+```
+3) We then config Cockpit to use Tailscale TLS certificates
+Your Raspberry pi might already had this directory
+> /etc/cockpit/ws-certs.d
+If not, then you can create one, using:
+```
+sudo mkdir -p /etc/cockpit/ws-certs.d
+```
+We then create a Symlink to update the files Tailscale generated
+```
+sudo ln -s /var/lib/tailscale/certs/<hostname>.ts.net.crt /etc/cockpit/ws-certs.d/10-tailscale.cert
+sudo ln -s /var/lib/tailscale/certs/<hostname>.ts.net.key /etc/cockpit/ws-certs.d/10-tailscale.key
+```
+Restart Cockpit to apply changes
+```
+sudo systemctl restart cockpit
+```
+5) Test Cockit again with HTTPS
+```
+https://<hostname>.ts.net:9090
+```
