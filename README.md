@@ -4,9 +4,11 @@ Thre are a few good VPN options, but I highly recommend Tailscale if you want so
 Here’s how you can do it:  
 1) First, go to https://tailscale.com/ and create an account > Sign up using Google / Github (choose your option)
 2) Install Tailscale client on your device from https://tailscale.com/download  
-Once complete, Tailscale icon should appear in your system tray > Right-click the icon > Log in using credentials you used to create the account  
-Tailscale will then ask you to authorize device to join you tailnet VPN > Click Connect > Then you will be able to view your device on Machines dashboard.
-3) If you have already enabled SSH on Raspberry Pi then move on to step 4. If you have not, then follow these steps.  
+Once complete, Tailscale icon should appear in your system tray
+> Right-click the icon > Log in using credentials you used to create the account  
+Tailscale will then ask you to authorize device to join you tailnet VPN
+> Click Connect > Then you will be able to view your device on Machines dashboard.
+4) If you have already enabled SSH on Raspberry Pi, move on to step 4. If you have not, then follow these steps.  
 Run `sudo raspi-config` to open Raspberry Pi Configuration Tool Interface
 > Select Interface Options > SSH > Yes > Ok
 4) To install Tailscale client on your Raspberry Pi, use:
@@ -37,7 +39,7 @@ This allow you to directly SSH your Pi from a browser
 It will then ask for login credential > SSH > Tailscale will open SSH session browser window
 
 # Setup-Cockpit-for-Raspberry-Pi-5
-If you want a GUI for managing you Raspberry Pi, you can you **Cockpit**, a beginner-friendly web-based graphical interface for servers
+If you want a GUI for managing you Raspberry Pi, you can use **Cockpit**, a beginner-friendly web-based graphical interface for servers
 1) Visit https://cockpit-project.org/running.html and select specific installation for you OS, or you can use
 ```
 sudo apt install cockpit -y
@@ -46,7 +48,7 @@ sudo apt install cockpit -y
 ```
 sudo systemctl enable --now cockpit.socket
 ```
-This command enables Cockpit to start on boot and starts it immediately
+This command enables Cockpit to start on boot and starts it immediately  
 3) Try to access Cockpit web interface by open you web browser and navigate to 
 ```
 https://<tailscale-ip>:9090
@@ -77,7 +79,7 @@ We then create a Symlink to update the files Tailscale generated
 sudo ln -s /var/lib/tailscale/certs/<hostname>.ts.net.crt /etc/cockpit/ws-certs.d/10-tailscale.cert
 sudo ln -s /var/lib/tailscale/certs/<hostname>.ts.net.key /etc/cockpit/ws-certs.d/10-tailscale.key
 ```
-Restart Cockpit to apply changes
+4) Restart Cockpit to apply changes
 ```
 sudo systemctl restart cockpit
 ```
@@ -85,3 +87,6 @@ sudo systemctl restart cockpit
 ```
 https://<hostname>.ts.net:9090
 ```
+
+# Reference
+> https://tailscale.com/learn/how-to-ssh-into-a-raspberry-pi
